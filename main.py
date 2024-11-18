@@ -26,7 +26,7 @@ def predict(input_text: InputText):
             return_tensors="pt", 
             truncation=True, 
             padding=True, 
-            max_length=512  # Optional: Set max token length for BERT models
+            max_length=512  # Ensure maximum token length for BERT compatibility
         )
         
         # Perform inference
@@ -41,17 +41,17 @@ def predict(input_text: InputText):
         
         return {
             "predicted_class": predicted_class,
-            "confidence": probabilities.tolist()
+            "confidence": probabilities[0].tolist()  # Ensure confidence scores are properly serialized
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
 
-# Optional CORS middleware for frontend integration
+# Enable CORS for frontend requests
 from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this with your frontend's domain in production
+    allow_origins=["https://front-end-gamma-flax.vercel.app", "https://front-end-gamma-flax.vercel.app/predict"],  # Replace with your frontend's URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
